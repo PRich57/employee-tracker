@@ -19,7 +19,7 @@ const init = async () => {
     const choice = answers.Choice;
 
   switch (choice) {
-    case 'View All Employees':
+    case 1:
       viewAllEmployees();
       break;
     case 2:
@@ -60,14 +60,9 @@ const init = async () => {
 // }
 
 async function viewAllEmployees() {
-  try {
-    await db.connect();
     const result = await query(`SELECT * FROM employee`);
     console.table(result);
     init();
-  } catch (err) {
-    console.error(err);
-  }
 }
 
 // async function addEmployee() {
@@ -81,7 +76,9 @@ async function viewAllRoles() {
 }
 
 async function addRole() {
-  const departments = await query(`SELECT id, name FROM departments`);
+  const department = await query(`select name as department_name
+    from department 
+    join role on department.id = role.department_id`);
   const questions = [
     {
       type: 'input',
@@ -97,7 +94,7 @@ async function addRole() {
       type: 'input',
       name: 'department_id',
       message: 'Please enter your new department.',
-      choices: departments,
+      choices: department,
     },
   ];
   const { title, salary, department_id } = await inquirer.prompt(questions);
