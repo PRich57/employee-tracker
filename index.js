@@ -1,56 +1,73 @@
 const question = require('./questions/questions');
 const inquirer = require('inquirer');
-const connection = require('./db/connection');
+const mysql = require('mysql2');
+// const db = require('./db/connection');
+const util = require('util');
 
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'root',
+  database: 'employees_db'
+});
 
-async function init() {
-  const { choice } = await inquirer.prompt(question.askQuestion(question.createList));
-  console.log(choice);
+const query = util.promisify(db.query).bind(db);
+
+const init = async () => {
+  try {
+    const answers = await inquirer.prompt(question.askQuestion(question.createList));
+    const choice = answers.Choice;
+
   switch (choice) {
     case 'View All Employees':
       viewAllEmployees();
       break;
-    case 'Add Employee':
+    case 2:
       addEmployee();
       break;
-    case 'Update Employee Role':
+    case 3:
       updateEmployeeRole();
       break;
-    case 'View All Roles':
+    case 4:
       viewAllRoles();
       break;
-    case 'Add Role':
+    case 5:
       addRole();
       break;
-    case 'View All Departments':
+    case 6:
       viewAllDepartments();
       break;
-    case 'Add Department':
+    case 7:
       addDepartment();
       break;
-    default:
+    case 8:
       console.log('Goodbye');
+      process.exit();
+      break;
+    default:
+      console.log('Invalid Choice');
+    }
+  } catch (err) {
+    console.error(err);
   }
-
-
-
-
-
-
-
-
+}
 
   // inquirer.prompt(question.askQuestion(question.createList)).then( answers => {
   //   console.log(answers);
 
   //   viewAllEmployees();
   // }) 
-}
+// }
 
 async function viewAllEmployees() {
-  const result = await query(`SELECT * FROM employee`);
-  console.table(result);
-  init();
+  try {
+    await db.connect();
+    const result = await query(`SELECT * FROM employee`);
+    console.table(result);
+    init();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 // async function addEmployee() {

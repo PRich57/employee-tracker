@@ -30,6 +30,10 @@ module.exports = {
         name: 'Add Department',
         value: 7
       },
+      {
+        name: 'Quit',
+        value: 8
+      },
     ]
     return result;
   },
