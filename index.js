@@ -44,7 +44,7 @@ const init = async () => {
 }
 
 async function viewAllEmployees() {
-    const result = await query(`SELECT * FROM employee`);
+    const result = await query(`SELECT employee.id, first_name, last_name, title, name AS department, salary, manager_id FROM employee JOIN role ON role.id = employee.role_id JOIN department ON department.id = role.department_id ORDER BY employee.id`);
     console.table(result);
     init();
 }
@@ -81,7 +81,15 @@ async function addEmployee() {
     `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)`,
     [first_name, last_name, role_id, manager_id]
   );
+  console.log(`${first_name} ${last_name} has been added to the employee database`);
   viewAllEmployees();
+}
+
+async function updateEmployeeRole() {
+  const roles = await query('SELECT title AS name, id AS value FROM role');
+  const questions = [
+
+  ]
 }
 
 async function viewAllRoles() {
@@ -98,21 +106,20 @@ async function addRole() {
     {
       type: 'input',
       name: 'title',
-      message: 'Please enter your new title:',
+      message: 'Please enter the name of the new role:',
     },
     {
       type: 'input',
       name: 'salary',
-      message: 'Please enter your new salary:',
+      message: `Please enter the new role's salary:`,
     },
     {
       type: 'list',
       name: 'department_id',
-      message: 'Please enter your new department:',
+      message: `Please enter the new role's department:`,
       choices: department,
     },
   ];
-  // FIGURE OUT A WAY TO GET DEPARTMENT NAME IN HERE INSTEAD OF DEPARTMENT_ID
   const { title, salary, department_id } = await inquirer.prompt(questions);
 
   await query(
@@ -124,15 +131,30 @@ async function addRole() {
 
 // Create viewAllDepartments function
 async function viewAllDepartments() {
+  // Create variable to store query
   const result = await query(`SELECT * FROM department`);
   console.table(result);
   init();
 }
 
 // Create addDepartment function
-// async function addDepartment() {
-//   const 
-// }
+async function addDepartment() {
+  const questions = [
+    {
+      type: 'input',
+      name: 'name',
+      message: 'Please enter the name of the new department:'
+    },
+  ];
+  const { name } = await inquirer.prompt(questions);
+
+  await query(
+    `INSERT INTO department (name) VALUES (?)`,
+    [name]
+    );
+  console.log(`Added ${ name } to the database.`);
+  viewAllDepartments();
+}
 
 
 init();
