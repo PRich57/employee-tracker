@@ -4,7 +4,7 @@ module.exports = {
     const result = [
       {
         name: 'View All Employees',
-        values: 1
+        value: 1
       },
       {
         name: 'Add Employee',

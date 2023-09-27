@@ -1,15 +1,7 @@
 const question = require('./questions/questions');
 const inquirer = require('inquirer');
-const mysql = require('mysql2');
-// const db = require('./db/connection');
+const db = require('./db/connection');
 const util = require('util');
-
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'employees_db'
-});
 
 const query = util.promisify(db.query).bind(db);
 
@@ -43,7 +35,6 @@ const init = async () => {
     case 8:
       console.log('Goodbye');
       process.exit();
-      break;
     default:
       console.log('Invalid Choice');
     }
@@ -52,51 +43,76 @@ const init = async () => {
   }
 }
 
-  // inquirer.prompt(question.askQuestion(question.createList)).then( answers => {
-  //   console.log(answers);
-
-  //   viewAllEmployees();
-  // }) 
-// }
-
 async function viewAllEmployees() {
     const result = await query(`SELECT * FROM employee`);
     console.table(result);
     init();
 }
 
-// async function addEmployee() {
-//   const employee
-// }
+async function addEmployee() {
+  const roles = await query('SELECT title AS name, id AS value FROM role');
+  const manager = await query('SELECT CONCAT(first_name, " ", last_name) AS name, id AS value FROM employee WHERE manager_id IS null');
+  const questions = [
+    {
+      type: 'input',
+      name: 'first_name',
+      message: `Please enter the employee's first name:`
+    },
+    {
+      type: 'input',
+      name: 'last_name',
+      message: `Please enter the employee's last name:`
+    },
+    {
+      type: 'list',
+      name: 'role_id',
+      message: `Please enter the ID number of the employee's role:`,
+      choices: roles,
+    },
+    {
+      type: 'list',
+      name: 'manager_id',
+      message: `Please enter the ID number of the employee's manager:`,
+      choices: manager,
+    }
+  ];
+  const { first_name, last_name, role_id, manager_id } = await inquirer.prompt(questions);
+  await query(
+    `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)`,
+    [first_name, last_name, role_id, manager_id]
+  );
+  viewAllEmployees();
+}
 
 async function viewAllRoles() {
+  // Add to query to join department names instead of id
   const result = await query(`SELECT * FROM role`);
   console.table(result);
   init();
 }
 
+// Create addRole function
 async function addRole() {
-  const department = await query(`select name as department_name
-    from department 
-    join role on department.id = role.department_id`);
+  const department = await query(`SELECT id AS value, name FROM department`);
   const questions = [
     {
       type: 'input',
       name: 'title',
-      message: 'Please enter your new title.',
+      message: 'Please enter your new title:',
     },
     {
       type: 'input',
       name: 'salary',
-      message: 'Please enter your new salary.',
+      message: 'Please enter your new salary:',
     },
     {
-      type: 'input',
+      type: 'list',
       name: 'department_id',
-      message: 'Please enter your new department.',
+      message: 'Please enter your new department:',
       choices: department,
     },
   ];
+  // FIGURE OUT A WAY TO GET DEPARTMENT NAME IN HERE INSTEAD OF DEPARTMENT_ID
   const { title, salary, department_id } = await inquirer.prompt(questions);
 
   await query(
@@ -105,5 +121,18 @@ async function addRole() {
   );
   viewAllRoles();
 }
+
+// Create viewAllDepartments function
+async function viewAllDepartments() {
+  const result = await query(`SELECT * FROM department`);
+  console.table(result);
+  init();
+}
+
+// Create addDepartment function
+// async function addDepartment() {
+//   const 
+// }
+
 
 init();
