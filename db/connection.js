@@ -9,6 +9,8 @@ const db = mysql.createConnection({
   console.log('Connected to the employees_db database')
 );
 
+console.log(db.database);
+
 db.connect(function(err) {
   if (err) throw err;
 

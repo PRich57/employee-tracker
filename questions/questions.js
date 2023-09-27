@@ -38,7 +38,7 @@ module.exports = {
     return [
       {
         type: 'list',
-        name: 'a',
+        name: 'Choice',
         message: 'What would you like to do?',
         choices
       }
