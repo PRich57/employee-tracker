@@ -85,13 +85,18 @@ async function addEmployee() {
     `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)`,
     [first_name, last_name, role_id, manager_id]
   );
-  console.log(`${first_name} ${last_name} has been added to the employee database`);
+  console.log(`${first_name} ${last_name} has been added to the employee database!`);
   viewAllEmployees();
 }
 
 async function updateEmployeeRole() {
   const employee = await query('SELECT CONCAT(first_name, " ", last_name) AS name, id AS value FROM employee');
   const role = await query('SELECT title AS name, id AS value FROM role');
+  const manager = await query('SELECT CONCAT(first_name, " ", last_name) AS name, id AS value FROM employee WHERE manager_id IS null');
+  manager.push({
+    name: 'No Manager',
+    value: null,
+  });
   const questions = [
     {
       type: 'list',
@@ -104,12 +109,18 @@ async function updateEmployeeRole() {
       name: 'role_id',
       message: 'Please select the new role for the selected employee:',
       choices: role
-    }
+    },
+    {
+      type: 'list',
+      name: 'manager_id',
+      message: 'Please update the manager for the selected employee:',
+      choices: manager
+    },
   ];
-  const { name, role_id } = await inquirer.prompt(questions);
+  const { name, role_id, manager_id } = await inquirer.prompt(questions);
   await query(
-    'UPDATE employee SET role_id = ? WHERE id = ?',
-    [role_id, name]
+    'UPDATE employee SET role_id = ?, manager_id = ? WHERE id = ?',
+    [role_id, manager_id, name]
   );
   viewAllEmployees();
 }
@@ -148,6 +159,7 @@ async function addRole() {
     `INSERT INTO role (title, salary, department_id) VALUES(?, ?, ?)`,
     [title, salary, department_id]
   );
+  console.log(`${title} has been added to the database!`);
   viewAllRoles();
 }
 
@@ -174,7 +186,7 @@ async function addDepartment() {
     `INSERT INTO department (name) VALUES (?)`,
     [name]
     );
-  console.log(`Added ${ name } to the database.`);
+  console.log(`Added ${name} to the database!`);
   viewAllDepartments();
 }
 
