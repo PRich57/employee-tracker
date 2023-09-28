@@ -44,7 +44,7 @@ const init = async () => {
 }
 
 async function viewAllEmployees() {
-    const result = await query(`SELECT employee.id, first_name, last_name, title, name AS department, salary, manager_id FROM employee JOIN role ON role.id = employee.role_id JOIN department ON department.id = role.department_id ORDER BY employee.id`);
+    const result = await query(`SELECT e.id, CONCAT(e.first_name, " ", e.last_name) AS name, r.title, d.name AS department, r.salary, CONCAT(e2.first_name, " ", e2.last_name) AS manager FROM employee AS e JOIN role AS r ON r.id = e.role_id LEFT JOIN employee AS e2 ON e.manager_id = e2.id JOIN department AS d ON d.id = r.department_id ORDER BY e.id`);
     console.table(result);
     init();
 }
@@ -52,6 +52,10 @@ async function viewAllEmployees() {
 async function addEmployee() {
   const roles = await query('SELECT title AS name, id AS value FROM role');
   const manager = await query('SELECT CONCAT(first_name, " ", last_name) AS name, id AS value FROM employee WHERE manager_id IS null');
+  manager.push({
+    name: 'No Manager',
+    value: null,
+  });
   const questions = [
     {
       type: 'input',
@@ -86,15 +90,33 @@ async function addEmployee() {
 }
 
 async function updateEmployeeRole() {
-  const roles = await query('SELECT title AS name, id AS value FROM role');
+  const employee = await query('SELECT CONCAT(first_name, " ", last_name) AS name, id AS value FROM employee');
+  const role = await query('SELECT title AS name, id AS value FROM role');
   const questions = [
-
-  ]
+    {
+      type: 'list',
+      name: 'name',
+      message: 'Please select the employee whose role needs updating:',
+      choices: employee,
+    },
+    {
+      type: 'list',
+      name: 'role_id',
+      message: 'Please select the new role for the selected employee:',
+      choices: role
+    }
+  ];
+  const { name, role_id } = await inquirer.prompt(questions);
+  await query(
+    'UPDATE employee SET role_id = ? WHERE id = ?',
+    [role_id, name]
+  );
+  viewAllEmployees();
 }
 
 async function viewAllRoles() {
   // Add to query to join department names instead of id
-  const result = await query(`SELECT * FROM role`);
+  const result = await query(`SELECT role.id, title, department.name AS department, salary FROM role JOIN department ON department.id = role.department_id`);
   console.table(result);
   init();
 }
