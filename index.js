@@ -1,6 +1,6 @@
 const question = require('./questions/questions');
 const inquirer = require('inquirer');
-const db = require('./db/connection');
+const db = require('./config/connection');
 const util = require('util');
 
 // Create a promisified object variable for querying the database
@@ -147,6 +147,8 @@ async function updateEmployeeRole() {
     'UPDATE employee SET role_id = ?, manager_id = ? WHERE id = ?',
     [role_id, manager_id, name]
   );
+  // Display a success message
+  console.log(`Employee's role has been updated!`);
   // Display the employees table to show updates and return to the main menu
   viewAllEmployees();
 }
