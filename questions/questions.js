@@ -1,5 +1,6 @@
 module.exports = {
 
+  // Function to create a list of option for the CLI menu
   createList: () => {
     const result = [
       {
@@ -37,14 +38,16 @@ module.exports = {
     ]
     return result;
   },
+
+  // This function defines the CLI question with the provided choices
   askQuestion: (cb) => {
     const choices = cb();
     return [
       {
         type: 'list',
         name: 'Choice',
-        message: 'What would you like to do?',
-        choices
+        message: 'What would you like to do?', // Prompt for the user
+        choices // The list of choices obtained from the callback
       }
     ]
   }
