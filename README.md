@@ -49,4 +49,6 @@
 
   Please direct all additional questions regarding this application to my email address provided above.
 
+  This README was generated through the use of another command-line application I created called 'readme-generator', which can be found in my GitHub repositories.
+
   
