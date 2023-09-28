@@ -154,7 +154,9 @@ async function updateEmployeeRole() {
 async function viewAllRoles() {
   // Add to query to join department names instead of having the department id in the table
   const result = await query(`SELECT role.id, title, department.name AS department, salary FROM role JOIN department ON department.id = role.department_id`);
+  // Display the table
   console.table(result);
+  // Return to main menu
   init();
 }
 
@@ -198,12 +200,15 @@ async function addRole() {
 async function viewAllDepartments() {
   // Create variable to store query
   const result = await query(`SELECT * FROM department`);
+  // Display the table
   console.table(result);
+  // Return to main menu
   init();
 }
 
 // Create addDepartment function
 async function addDepartment() {
+  // Define questions
   const questions = [
     {
       type: 'input',
@@ -211,13 +216,17 @@ async function addDepartment() {
       message: 'Please enter the name of the new department:'
     },
   ];
+  // Create variable of user input from the prompt
   const { name } = await inquirer.prompt(questions);
 
+  // Insert the user input into the table
   await query(
     `INSERT INTO department (name) VALUES (?)`,
     [name]
     );
+  // Display a success message
   console.log(`Added ${name} to the database!`);
+  // Show the table with the changes and return to main menu
   viewAllDepartments();
 }
 
