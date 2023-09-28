@@ -7,11 +7,12 @@
   - Through the creation of this project, I learned how to relate data between tables in a SQL database, how to combine SQL databases into a user friendly command-line application, how to use JavaScript in conjunction with SQL, and how to create, read, and update data with SQL.
   - In the future, I plan to add additional tables and data, as well as menu items to allow users to remove data from the database. As I continue to develop as a software developer, I will also continue to update this with new technology I learn along the way.
 
+  To see a walkthrough video demonstrating the appearance and usage of this application click [here!](https://drive.google.com/file/d/1LO_TTRBHj3BqetLDMb_zZNRFhwHTSlpQ/view?usp=sharing)
+
 ## Table of Contents
 
   - [Installation](#installation)
   - [Usage](#usage)
-  - [Mock-Up](#mock-up)
   - [License](#license)
   - [Contributing](#contributing)
   - [Tests](#tests)
@@ -24,10 +25,6 @@
 ## Usage
   
   To use this project enter the command 'node index.js' in the terminal. The main menu will display in the terminal and responds to keyboard interaction. Move through the list with the up or down arrows, hit enter to select the highlighted menu item, move through additional prompts with the same keys, or, if prompted, type a response then hit enter to submit.
-  
-## Mock-Up
-
-
 
 ## License
 
