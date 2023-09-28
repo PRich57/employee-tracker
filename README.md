@@ -20,7 +20,7 @@
 
 ## Installation
   
-  This project requires the use of node.js as well as downloading the dependencies in the package.json. The dependencies can be added with by entering the command 'npm i' in the terminal.
+  This project requires the use of node.js as well as downloading the dependencies in the package.json. The dependencies can be added by entering the command 'npm i' in the terminal.
   
 ## Usage
   
