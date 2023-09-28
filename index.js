@@ -140,16 +140,19 @@ async function updateEmployeeRole() {
       choices: manager
     },
   ];
+  // Create variables for each user response from prompts
   const { name, role_id, manager_id } = await inquirer.prompt(questions);
+  // Update the employee data with the input from the user
   await query(
     'UPDATE employee SET role_id = ?, manager_id = ? WHERE id = ?',
     [role_id, manager_id, name]
   );
+  // Display the employees table to show updates and return to the main menu
   viewAllEmployees();
 }
 
 async function viewAllRoles() {
-  // Add to query to join department names instead of id
+  // Add to query to join department names instead of having the department id in the table
   const result = await query(`SELECT role.id, title, department.name AS department, salary FROM role JOIN department ON department.id = role.department_id`);
   console.table(result);
   init();
@@ -157,6 +160,7 @@ async function viewAllRoles() {
 
 // Create addRole function
 async function addRole() {
+  // Add query to get department names and their id with an alias of value to work with inquirer
   const department = await query(`SELECT id AS value, name FROM department`);
   const questions = [
     {
@@ -176,13 +180,17 @@ async function addRole() {
       choices: department,
     },
   ];
+  // Create variables of user input from prompts
   const { title, salary, department_id } = await inquirer.prompt(questions);
-
+  
+  // Insert user input into the table
   await query(
     `INSERT INTO role (title, salary, department_id) VALUES(?, ?, ?)`,
     [title, salary, department_id]
   );
+  // Display a success message
   console.log(`${title} has been added to the database!`);
+  // Show the table with the updates and return to the main menu
   viewAllRoles();
 }
 
